@@ -1,0 +1,157 @@
+/* style.css */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    transition: background 0.4s ease;
+}
+
+/* ================= THEMES ================= */
+
+.dark-mode {
+    background: #0f172a;
+    color: #f8fafc;
+}
+
+.light-mode {
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* ================= GLASS EFFECT ================= */
+
+.glass {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ================= HERO BG ================= */
+
+.hero-bg {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(circle at top left,
+            rgba(6, 182, 212, 0.2),
+            transparent 35%),
+        radial-gradient(circle at bottom right,
+            rgba(59, 130, 246, 0.15),
+            transparent 35%);
+    filter: blur(60px);
+}
+
+/* ================= ANIMATIONS ================= */
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade {
+    animation: fadeIn 0.8s ease forwards;
+}
+
+.animate-fade-delay {
+    animation: fadeIn 0.8s ease 0.2s forwards;
+    opacity: 0;
+}
+
+.animate-fade-delay-2 {
+    animation: fadeIn 0.8s ease 0.4s forwards;
+    opacity: 0;
+}
+
+.hover-card {
+    transition: all 0.35s ease;
+}
+
+.hover-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 0 40px rgba(6, 182, 212, 0.12);
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.loader-spin {
+    width: 65px;
+    height: 65px;
+    border: 4px solid #06b6d4;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+.floating-icon {
+    animation: float 3s ease-in-out infinite;
+}
+
+/* ================= CUSTOM ELEMENTS ================= */
+
+.icon-box {
+    width: 52px;
+    height: 52px;
+    min-width: 52px;
+    border-radius: 14px;
+    background: rgba(6, 182, 212, 0.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.step-circle {
+    width: 70px;
+    height: 70px;
+    margin: auto;
+    margin-bottom: 24px;
+    border-radius: 999px;
+    background: rgba(6, 182, 212, 0.15);
+    color: #22d3ee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    font-weight: 900;
+}
+
+/* ================= SCROLLBAR ================= */
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #06b6d4;
+    border-radius: 20px;
+}
+
+::-webkit-scrollbar-track {
+    background: #0f172a;
+}

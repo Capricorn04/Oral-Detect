@@ -41,7 +41,7 @@ fileInput.addEventListener("change", function (e) {
 
             preview.src = event.target.result;
 
-            runAISimulation();
+            runAISimulation(file);
         };
 
         reader.readAsDataURL(file);
@@ -76,6 +76,7 @@ dropZone.addEventListener("drop", (e) => {
 
     if (files.length) {
 
+        const file = files[0];
         fileInput.files = files;
 
         const reader = new FileReader();
@@ -84,56 +85,97 @@ dropZone.addEventListener("drop", (e) => {
 
             preview.src = event.target.result;
 
-            runAISimulation();
+            runAISimulation(file);
         };
 
-        reader.readAsDataURL(files[0]);
+        reader.readAsDataURL(file);
     }
 });
 
-// ================= AI SIMULATION =================
+// ================= AI PREDICTION =================
 
 async function runAISimulation(file) {
+
+    // Show loader
     loader.classList.remove('hidden');
     resultContainer.classList.add('hidden');
 
-    // Create a FormData object to send the image
+    // Create FormData
     const formData = new FormData();
     formData.append('file', file);
 
     try {
-        // Send request to your Flask Backend
+
+        // Send image to Flask backend
         const response = await fetch('http://127.0.0.1:5000/predict', {
             method: 'POST',
             body: formData
         });
+
         const data = await response.json();
 
+        // Hide loader and show results
         loader.classList.add('hidden');
         resultContainer.classList.remove('hidden');
 
-        // Update UI with real AI results
+        // ================= DISPLAY RESULTS =================
+
+        // Prediction
         document.getElementById('prediction').innerText = data.prediction;
-        document.getElementById('accuracy-text').innerText = data.confidence + "%";
-        document.getElementById('accuracy-bar').style.width = data.confidence + "%";
-        document.getElementById('info-text').innerText = data.info;
+
+        // Confidence Score
+        document.getElementById('accuracy-text').innerText =
+            data.confidence + "%";
+
+        document.getElementById('accuracy-bar').style.width =
+            data.confidence + "%";
+
+        // AI Insights Box
+        document.getElementById('info-text').innerHTML = `
+            <div class="mt-4 space-y-2">
+                <p>
+                    <strong>Detected Type:</strong> ${data.type}
+                </p>
+
+                <p>
+                    <strong>Severity Rating:</strong>
+                    <span class="${
+                        data.rating.includes('High')
+                            ? 'text-red-500'
+                            : 'text-cyan-400'
+                    }">
+                        ${data.rating}
+                    </span>
+                </p>
+
+                <div class="mt-3">
+                    <strong>Recommendations:</strong>
+                    <ul class="list-disc ml-5 mt-1 text-sm">
+                        ${data.recommendations
+                            .map(rec => `<li>${rec}</li>`)
+                            .join('')}
+                    </ul>
+                </div>
+            </div>
+        `;
+
+        // ================= CLINICS =================
+
+        const clinicHTML = data.clinics.map(c => `
+            <div class="p-3 rounded-xl border border-white/10 hover:border-cyan-400 transition">
+                <p class="font-bold text-xs">${c.name}</p>
+                <p class="text-[10px] opacity-50">${c.address}</p>
+            </div>
+        `).join('');
+
+        document.getElementById('clinics').innerHTML = clinicHTML;
 
     } catch (error) {
+
         console.error("Error connecting to backend:", error);
+
         alert("Make sure your Flask server is running!");
+
         loader.classList.add('hidden');
     }
 }
-
-// Update the event listener to pass the 'file' object
-fileInput.addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            preview.src = event.target.result;
-            runAISimulation(file); // Pass the actual file here
-        }
-        reader.readAsDataURL(file);
-    }
-});

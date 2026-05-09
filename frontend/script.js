@@ -93,53 +93,47 @@ dropZone.addEventListener("drop", (e) => {
 
 // ================= AI SIMULATION =================
 
-function runAISimulation() {
+async function runAISimulation(file) {
+    loader.classList.remove('hidden');
+    resultContainer.classList.add('hidden');
 
-    loader.classList.remove("hidden");
-    resultContainer.classList.add("hidden");
+    // Create a FormData object to send the image
+    const formData = new FormData();
+    formData.append('file', file);
 
-    setTimeout(() => {
-
-        loader.classList.add("hidden");
-        resultContainer.classList.remove("hidden");
-
-        // RANDOM DEMO RESULT
-
-        const random = Math.random();
-
-        if (random > 0.5) {
-
-            document.getElementById("prediction").innerText =
-                "Cancerous Patterns Detected";
-
-            document.getElementById("accuracy-text").innerText =
-                "95.8%";
-
-            document.getElementById("accuracy-bar").style.width =
-                "95.8%";
-
-            document.getElementById("info-text").innerText =
-                "AI analysis suggests possible Squamous Cell Carcinoma traits. Clinical examination and biopsy are recommended.";
-
-        } else {
-
-            document.getElementById("prediction").innerText =
-                "No Significant Abnormalities";
-
-            document.getElementById("accuracy-text").innerText =
-                "98.2%";
-
-            document.getElementById("accuracy-bar").style.width =
-                "98.2%";
-
-            document.getElementById("info-text").innerText =
-                "AI analysis did not detect significant malignant patterns. Continue regular oral health monitoring.";
-        }
-
-        window.scrollTo({
-            top: resultContainer.offsetTop - 100,
-            behavior: "smooth"
+    try {
+        // Send request to your Flask Backend
+        const response = await fetch('http://127.0.0.1:5000/predict', {
+            method: 'POST',
+            body: formData
         });
+        const data = await response.json();
 
-    }, 2500);
+        loader.classList.add('hidden');
+        resultContainer.classList.remove('hidden');
+
+        // Update UI with real AI results
+        document.getElementById('prediction').innerText = data.prediction;
+        document.getElementById('accuracy-text').innerText = data.confidence + "%";
+        document.getElementById('accuracy-bar').style.width = data.confidence + "%";
+        document.getElementById('info-text').innerText = data.info;
+
+    } catch (error) {
+        console.error("Error connecting to backend:", error);
+        alert("Make sure your Flask server is running!");
+        loader.classList.add('hidden');
+    }
 }
+
+// Update the event listener to pass the 'file' object
+fileInput.addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            preview.src = event.target.result;
+            runAISimulation(file); // Pass the actual file here
+        }
+        reader.readAsDataURL(file);
+    }
+});

@@ -65,9 +65,12 @@ The platform provides an interactive and futuristic UI where users can:
 ```bash
 OralAI/
 │
-├── index.html
-├── style.css
-├── script.js
+├──frontend
+|  ├── index.html
+|  ├── style.css
+|  ├── script.js
+├──backend
+  ├──app.py
 └── README.md
 ```
 

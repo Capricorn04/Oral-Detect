@@ -155,3 +155,10 @@ body {
 ::-webkit-scrollbar-track {
     background: #0f172a;
 }
+
+#result-container {
+    max-height: 80vh !important; /* Force the height limit */
+    overflow-y: scroll !important; /* Force a scrollbar to appear even if not needed */
+    padding-bottom: 50px !important; 
+    display: block !important;
+}

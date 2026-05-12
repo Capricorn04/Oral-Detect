@@ -9,7 +9,7 @@ The platform provides an interactive and futuristic UI where users can:
 - Upload oral cavity images
 - Simulate AI-based screening results
 - Experience a healthcare-focused AI workflow
-
+- Recommends best hospitals nearby
 ---
 
 # 🚀 Features
